@@ -3,6 +3,8 @@ package akkaexample;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 
@@ -100,7 +102,33 @@ class CcpTradesMessage implements Serializable {
     }
 }
 
-class GetUnmatchedMessage implements Serializable {}
+class GetUnmatchedMessage implements Serializable {
+    private MatchMethod matchMethod;
+    private Integer maxNumberOfActors;
+    private Integer chunkSize;
+
+    public GetUnmatchedMessage(MatchMethod matchMethod, Integer maxNumberOfActors, Integer chunkSize) {
+        this.matchMethod = matchMethod;
+        this.maxNumberOfActors = maxNumberOfActors;
+        this.chunkSize = chunkSize;
+    }
+
+    public GetUnmatchedMessage() {
+        this(MatchMethod.SINGLE_ACTOR, null, null);
+    }
+
+    public MatchMethod getMatchMethod() {
+        return matchMethod;
+    }
+
+    public Integer getMaxNumberOfActors() {
+        return maxNumberOfActors;
+    }
+
+    public Integer getChunkSize() {
+        return chunkSize;
+    }
+}
 
 class MatchResultsMessage implements Serializable {
     private UnmatchedItems unmatchedItems;
@@ -110,5 +138,83 @@ class MatchResultsMessage implements Serializable {
 
     public UnmatchedItems getUnmatchedItems() {
         return unmatchedItems;
+    }
+}
+
+class OneWayMatchMessage implements Serializable {
+    private Map<String, Trade> tradesMap;
+    private Map<String, CcpTrade> ccpTradesMap;
+    private TradesType tradesType;
+    private Integer maxNumberOfActors;
+    private Integer chunkSize;
+
+    public OneWayMatchMessage(Map<String, Trade> tradesMap, Map<String, CcpTrade> ccpTradesMap, TradesType tradesType, Integer maxNumberOfActors, Integer chunkSize) {
+        this.tradesMap = tradesMap;
+        this.ccpTradesMap = ccpTradesMap;
+        this.tradesType = tradesType;
+        this.maxNumberOfActors = maxNumberOfActors;
+        this.chunkSize = chunkSize;
+    }
+
+    public Map<String, Trade> getTradesMap() {
+        return tradesMap;
+    }
+
+    public Map<String, CcpTrade> getCcpTradesMap() {
+        return ccpTradesMap;
+    }
+
+    public TradesType getTradesType() {
+        return tradesType;
+    }
+
+    public Integer getMaxNumberOfActors() {
+        return maxNumberOfActors;
+    }
+
+    public Integer getChunkSize() {
+        return chunkSize;
+    }
+}
+
+class OneWayMatchResultsMessage implements Serializable {
+    private UnmatchedItems unmatchedItems;
+    private TradesType tradesType;
+
+    public OneWayMatchResultsMessage(UnmatchedItems unmatchedItems, TradesType tradesType){
+        this.unmatchedItems = unmatchedItems;
+        this.tradesType = tradesType;
+    }
+
+    public UnmatchedItems getUnmatchedItems() {
+        return unmatchedItems;
+    }
+
+    public TradesType getTradesType() {
+        return tradesType;
+    }
+}
+
+class PartialMatchMessage<T, S> implements Serializable {
+    private List<T> tradesList;
+    private Map<String, S> tradesMap;
+    private TradesType tradesType;
+
+    public PartialMatchMessage(List<T> tradesList, Map<String, S> tradesMap, TradesType tradesType) {
+        this.tradesList = tradesList;
+        this.tradesMap = tradesMap;
+        this.tradesType = tradesType;
+    }
+
+    public List<T> getTradesList() {
+        return tradesList;
+    }
+
+    public Map<String, S> getTradesMap() {
+        return tradesMap;
+    }
+
+    public TradesType getTradesType() {
+        return tradesType;
     }
 }
